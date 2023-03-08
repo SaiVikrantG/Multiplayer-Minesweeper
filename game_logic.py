@@ -15,7 +15,7 @@ def minesweeper(n):
 
         Index.append((x,y))
 
-        arr[y][x] = 'X'
+        arr[y][x] = 5
         if (x >= 1 and x <= 3):
             arr[y][x+1] += 1 # center right
             arr[y][x-1] += 1 # center left
@@ -45,6 +45,7 @@ def minesweeper(n):
     for row in arr:
         print(" ".join(str(cell) for cell in row))
         print("")
+        
 
 if __name__ == "__main__":
     minesweeper(5)
