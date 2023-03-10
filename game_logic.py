@@ -1,7 +1,9 @@
 import random
 GameStatus = True
 
-def GenerateMineSweeperMap(n, k):
+def GenerateMineSweeperMap():
+    n = 5
+    k=3
     arr = [[0 for row in range(n)] for column in range(n)]
     for num in range(k):
         x = random.randint(0,n-1)
@@ -35,7 +37,7 @@ def GenerateMineSweeperMap(n, k):
                 arr[y+1][x] += 1 # bottom center
     return arr
 
-def GeneratePlayerMap(n):
+def GeneratePlayerMap(n=5):
     arr = [['-' for row in range(n)] for column in range(n)]
     return arr 
 
@@ -58,21 +60,11 @@ def CheckContinueGame(score):
 
 def Game():
     global GameStatus
-    
-    while GameStatus:
-        difficulty = input("Select your difficulty (b, i, h):")
-        if difficulty.lower() == 'b':
-            n = 5
-            k = 3
-        elif difficulty.lower() == 'i':
-            n = 6
-            k = 8
-        else:
-            n = 8
-            k = 20
+
+    while GameStatus: 
  
-        minesweeper_map = GenerateMineSweeperMap(n, k)
-        player_map = GeneratePlayerMap(n)
+        minesweeper_map = GenerateMineSweeperMap()
+        player_map = GeneratePlayerMap()
         score = 0
         while True:
             if CheckWon(player_map) == False:
