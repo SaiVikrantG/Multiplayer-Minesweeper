@@ -8,8 +8,8 @@ GAME_PORT = 6005
 # participating clients must use this port for game communication
 
 
-n=5
-k=3
+n=8
+k=6
 
 ############## GAME LOGIC ##############
 
@@ -49,7 +49,7 @@ def GenerateMineSweeperMap():
                 arr[y+1][x] += 1 # bottom center
     return arr
 
-def GeneratePlayerMap(n=5):
+def GeneratePlayerMap():
     arr = [['-' for row in range(n)] for column in range(n)]
     return arr 
 
