@@ -7,15 +7,15 @@ import pickle
 GAME_PORT = 6005
 # participating clients must use this port for game communication
 
-#GameStatus = True
+
+n=5
+k=3
 
 ############## GAME LOGIC ##############
 
 
 
 def GenerateMineSweeperMap():
-    n=5
-    k=3
     arr = [[0 for row in range(n)] for column in range(n)]
     for num in range(k):
         x = random.randint(0,n-1)
@@ -58,47 +58,15 @@ def DisplayMap(map):
         print(" ".join(str(cell) for cell in row))
         print("")
 
-def CheckWon(map):
-    for row in map:
-        for cell in row:
-            if cell == '-':
-                return False
-    return True
+def CheckWon(score):
+    if(score==((n*n)-k)/2):
+      return True
+    return False
 
 def CheckContinueGame(score):
     print("Your score: ", score)
-    
-    return False
 
-def Game():
-    global GameStatus
-    
-    while GameStatus:
-        minesweeper_map = GenerateMineSweeperMap()
-        player_map = GeneratePlayerMap()
-        score = 0
-        while True:
-            if CheckWon(player_map) == False:
-                print("Enter your cell you want to open :")
-                x = input("X (1 to 5) :")
-                y = input("Y (1 to 5) :")
-                x = int(x) - 1 # 0 based indexing
-                y = int(y) - 1 # 0 based indexing
-                if (minesweeper_map[y][x] == 5):
-                    print("Game Over!")
-                    DisplayMap(minesweeper_map)
-                    GameStatus = CheckContinueGame(score)
-                    break
-                else:
-                    player_map[y][x] = minesweeper_map[y][x]
-                    DisplayMap(player_map)
-                    score += 1
- 
-            else:
-                DisplayMap(player_map)
-                print("You have Won!")
-                GameStatus = CheckContinueGame(score)
-                break
+
 
 def print_current_board():
   print('board:..')
@@ -108,6 +76,8 @@ def print_current_board():
 
 def game_server(after_connect):
   check1 = 0
+  check1=2
+
   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as accepter_socket:
       accepter_socket.bind(('', GAME_PORT))
       accepter_socket.listen(1)
@@ -136,16 +106,19 @@ def game_server(after_connect):
 
           print("waiting for opp's move")
           opp_move = game_socket.recv(4096)
-          if not opp_move:
+          if(not opp_move and score!=((n*n)-k)/2):
             check1 = 1
             break
+          if(not opp_move and score==((n*n)-k)/2):
+             check1=0
+             break
           recv_player_map = pickle.loads(opp_move)
           DisplayMap(recv_player_map)
 
           #update_game_state('opp', opp_move)
 
           
-          if CheckWon(recv_player_map) == False:
+          if CheckWon(score) == False:
                 print("Enter your cell you want to open :")
                 x = input("X (1 to 5) :")
                 y = input("Y (1 to 5) :")
@@ -155,17 +128,19 @@ def game_server(after_connect):
                 if (minesweeper_map[y][x] == 5):
                     print("Game Over! You lost.")
                     DisplayMap(minesweeper_map)
-                    GameStatus = CheckContinueGame(score)
+                    CheckContinueGame(score)
                     break
                 else:
                     recv_player_map[y][x] = minesweeper_map[y][x]
                     DisplayMap(recv_player_map)
+
                     score += 1
  
           else:
-                DisplayMap(recv_player_map)
-                print("You have Won!")
-                GameStatus = CheckContinueGame(score)
+                DisplayMap(minesweeper_map)
+                #print("You have Won!")
+                check1 = 0
+                CheckContinueGame(score)
                 break
           
           send_map = pickle.dumps(recv_player_map)
@@ -173,16 +148,18 @@ def game_server(after_connect):
 
 
       if(check1==0):
-        print_current_board()
+        CheckContinueGame(score)
+        print("Tie!")
       elif(check1==1):
+        CheckContinueGame(score)
         print("You won!")  
-      
-      print('Game ended')
+      else:
+        print('Game ended')
 
 
 def game_client(opponent):
   check = 1
-  check1 = 0
+  check1=2
 
   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as game_socket:
       game_socket.connect((opponent, GAME_PORT))
@@ -200,9 +177,12 @@ def game_client(opponent):
         if(check==0):
           print("Waiting for opponent's move")
           recv_map = game_socket.recv(4096)
-          if not recv_map:
+          if(not recv_map and score!=((n*n)-k)/2):
             check1 = 1
             break
+          if(not recv_map and score==((n*n)-k)/2):
+             check1=0
+             break 
           player_map = pickle.loads(recv_map)
           DisplayMap(player_map)
         else:
@@ -219,7 +199,7 @@ def game_client(opponent):
                 if (minesweeper_map[y][x] == 5):
                     print("Game Over! You lost.")
                     DisplayMap(minesweeper_map)
-                    GameStatus = CheckContinueGame(score)
+                    CheckContinueGame(score)
                     break
                 else:
                     player_map[y][x] = minesweeper_map[y][x]
@@ -227,9 +207,10 @@ def game_client(opponent):
                     score += 1
  
         else:
-              DisplayMap(player_map)
-              print("You have Won!")
-              GameStatus = CheckContinueGame(score)
+              DisplayMap(minesweeper_map)
+              #print("You have Won!")
+              check1 = 0
+              CheckContinueGame(score)
               break
         
         send_map = pickle.dumps(player_map)
@@ -237,7 +218,10 @@ def game_client(opponent):
 
 
   if(check1==0):
-        print_current_board()
+        CheckContinueGame(score)
+        print("Tie!")
   elif(check1==1):
+        CheckContinueGame(score)
         print("You won!")
-  print('Game ended')
+  else:
+        print('Game ended')
