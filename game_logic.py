@@ -1,4 +1,5 @@
 import random
+GameStatus = True
 
 def GenerateMineSweeperMap(n, k):
     arr = [[0 for row in range(n)] for column in range(n)]
@@ -52,13 +53,12 @@ def CheckWon(map):
 
 def CheckContinueGame(score):
     print("Your score: ", score)
-    isContinue = input("Do you want to try again? (y/n) :")
-    if isContinue == 'n':
-        return False
-    return True
+    
+    return False
 
 def Game():
-    GameStatus = True
+    global GameStatus
+    
     while GameStatus:
         difficulty = input("Select your difficulty (b, i, h):")
         if difficulty.lower() == 'b':
