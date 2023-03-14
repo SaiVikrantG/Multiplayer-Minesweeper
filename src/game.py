@@ -273,8 +273,8 @@ def game_client(opponent):
                 #timer.start_time()
                 #time_flag = 1
                 print("Enter your cell you want to open :")
-                x = input("X (1 to 5) :")
-                y = input("Y (1 to 5) :")
+                x = input("X (1 to 8) :")
+                y = input("Y (1 to 8) :")
                 #timer.pause_time()
                 x = int(x) - 1 # 0 based indexing
                 y = int(y) - 1 # 0 based indexing
