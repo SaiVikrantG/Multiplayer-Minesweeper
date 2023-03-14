@@ -86,7 +86,7 @@ def game_server(after_connect):
       height = 500
       win = pygame.display.set_mode((width,height))
       pygame.display.set_caption("Server")
-      font = pygame.font.SysFont('timesnewroman', 30)
+      font = pygame.font.SysFont('Pokemon GB.ttf', 30)
 
       accepter_socket.bind(('', GAME_PORT))
       accepter_socket.listen(1)
@@ -144,6 +144,11 @@ def game_server(after_connect):
                 win.blit(string, textRect)
 
                 height += 53
+            
+            text = font.render("Minesweeper",True,(0,0,0))
+            textRect1 = text.get_rect()
+            textRect1.center = ((width // 2), 100)
+            win.blit(text, textRect1)
 
             pygame.display.update()
 
@@ -201,7 +206,7 @@ def game_client(opponent):
       height = 500
       win = pygame.display.set_mode((width,height))
       pygame.display.set_caption("Client")
-      font = pygame.font.SysFont('timesnewroman', 30)
+      font = pygame.font.SysFont('Pokemon GB.ttf', 30)
 
 
 
@@ -246,9 +251,15 @@ def game_client(opponent):
                 string = font.render(string, True, (0,0,0))
                 textRect = string.get_rect()
                 textRect.center = ((width // 2), (height // 2)-70)
+      
                 win.blit(string, textRect)
 
                 height += 53
+
+            text = font.render("Minesweeper",True,(0,0,0))
+            textRect1 = text.get_rect()
+            textRect1.center = ((width // 2), 100)
+            win.blit(text, textRect1)  
 
             pygame.display.update()
         '''time.sleep(5)
