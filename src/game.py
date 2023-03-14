@@ -87,6 +87,7 @@ def game_server(after_connect):
       win = pygame.display.set_mode((width,height))
       pygame.display.set_caption("Server")
       font = pygame.font.SysFont('Pokemon GB.ttf', 30)
+      
 
       accepter_socket.bind(('', GAME_PORT))
       accepter_socket.listen(1)
@@ -155,8 +156,8 @@ def game_server(after_connect):
           
           if CheckWon(score) == False:
                 print("Enter your cell you want to open :")
-                x = input("X (1 to 5) :")
-                y = input("Y (1 to 5) :")
+                x = input("X (1 to 8) :")
+                y = input("Y (1 to 8) :")
                 x = int(x) - 1 # 0 based indexing
                 y = int(y) - 1 # 0 based indexing
 
@@ -187,7 +188,7 @@ def game_server(after_connect):
         print("Tie!")
       elif(check1==1):
         CheckContinueGame(score)
-        print("You won!")  
+        print("Your opponet tripped on a mine. You won!")  
       else:
         print('Game ended')
 
@@ -307,7 +308,7 @@ def game_client(opponent):
         print("Tie!")
   elif(check1==1):
         CheckContinueGame(score)
-        print("You won!")
+        print("Your opponet tripped on a mine. You won!")
   else:
         print('Game ended')
 
