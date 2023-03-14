@@ -4,6 +4,7 @@ import time
 import random
 import pickle
 import pygame 
+import threading
 
 
 #import timer 
@@ -77,7 +78,7 @@ def CheckContinueGame(score):
 def game_server(after_connect):
   check1 = 0
   check1=2
-  string = ""
+  
 
   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as accepter_socket:
       
@@ -127,31 +128,41 @@ def game_server(after_connect):
 
           #update_game_state('opp', opp_move)
 
-          run = True
-          while run:
-            for event in pygame.event.get():
-              if event.type == pygame.QUIT:
-                run = False   
-            win.fill((255,255,255))
-            height = 500
+          def thread():
+              run = True
+              while run:
+                  for event in pygame.event.get():
+                      if event.type == pygame.QUIT:
+                          pygame.quit()   
+                          run = False
+                          break 
 
-            for i in recv_player_map:
-                string = ""
-                for j in i:
-                  string += str(j) + "  "
-                string = font.render(string, True, (0,0,0))
-                textRect = string.get_rect()
-                textRect.center = ((width // 2), (height // 2)-70)
-                win.blit(string, textRect)
+                  win.fill((255,255,255))
+                  height = 500
 
-                height += 53
-            
-            text = font.render("Minesweeper",True,(0,0,0))
-            textRect1 = text.get_rect()
-            textRect1.center = ((width // 2), 100)
-            win.blit(text, textRect1)
+                  for i in recv_player_map:
+                          string = ""
+                          for j in i:
+                              string += str(j) + "  "
+                          text1 = font.render(string, True, (0,0,0))
+                          textRect = text1.get_rect()
+                          textRect.center = ((width // 2), (height // 2)-70)
+                          win.blit(text1, textRect)
 
-            pygame.display.update()
+                          height += 53
+                      
+                  text = font.render("Minesweeper",True,(0,0,0))
+                  textRect1 = text.get_rect()
+                  textRect1.center = ((width // 2), 100)
+                  win.blit(text, textRect1)
+
+                  pygame.display.update()
+
+                  run = False
+
+          t1 = threading.Thread(target = thread)  
+          t1.run()
+
 
           
           if CheckWon(score) == False:
@@ -181,6 +192,7 @@ def game_server(after_connect):
           
           send_map = pickle.dumps(recv_player_map)
           game_socket.sendall(send_map)
+          
 
 
       if(check1==0):
@@ -192,13 +204,12 @@ def game_server(after_connect):
       else:
         print('Game ended')
 
-  pygame.quit()
+      pygame.quit()
 
 
 def game_client(opponent):
   check = 1
   check1=2
-  string = ""
 
   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as game_socket:
       
@@ -235,39 +246,44 @@ def game_client(opponent):
           player_map = pickle.loads(recv_map)
           DisplayMap(player_map)
         else:
-          check=0
+          check=0  
 
-        run = True
-        while run:
-            for event in pygame.event.get():
-              if event.type == pygame.QUIT:
-                run = False   
-            win.fill((255,255,255))
-            height = 500
+        
+        def thread():
+            run = True
+            while run:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()   
+                        run = False 
+                         
 
-            for i in player_map:
-                string = ""
-                for j in i:
-                  string += str(j) + "  "
-                string = font.render(string, True, (0,0,0))
-                textRect = string.get_rect()
-                textRect.center = ((width // 2), (height // 2)-70)
-      
-                win.blit(string, textRect)
+                win.fill((255,255,255))
+                height = 500
 
-                height += 53
+                for i in player_map:
+                        string = ""
+                        for j in i:
+                            string += str(j) + "  "
+                        text1 = font.render(string, True, (0,0,0))
+                        textRect = text1.get_rect()
+                        textRect.center = ((width // 2), (height // 2)-70)
+                        win.blit(text1, textRect)
 
-            text = font.render("Minesweeper",True,(0,0,0))
-            textRect1 = text.get_rect()
-            textRect1.center = ((width // 2), 100)
-            win.blit(text, textRect1)  
+                        height += 53
+                    
+                text = font.render("Minesweeper",True,(0,0,0))
+                textRect1 = text.get_rect()
+                textRect1.center = ((width // 2), 100)
+                win.blit(text, textRect1)
 
-            pygame.display.update()
-        '''time.sleep(5)
-        pygame.quit()'''      
+                pygame.display.update()
+
+                run = False
 
 
-
+        t1 = threading.Thread(target = thread)  
+        t1.run()
         
         if CheckWon(player_map) == False:
                 #timer.start_time()
@@ -298,7 +314,7 @@ def game_client(opponent):
         
         send_map = pickle.dumps(player_map)
         game_socket.sendall(send_map)
-        #pygame.quit()
+        
 
 
 
@@ -313,3 +329,4 @@ def game_client(opponent):
         print('Game ended')
 
   pygame.quit()
+  
