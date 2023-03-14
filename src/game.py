@@ -3,13 +3,17 @@ import errno
 import time
 import random
 import pickle
+import pygame 
+
+
+#import timer 
 
 GAME_PORT = 6005
 # participating clients must use this port for game communication
 
-
+#time_flag = 0
 n=8
-k=6
+k=10
 
 ############## GAME LOGIC ##############
 
@@ -68,17 +72,22 @@ def CheckContinueGame(score):
 
 
 
-def print_current_board():
-  print('board:..')
-
-
 ############## EXPORTED FUNCTIONS ##############
 
 def game_server(after_connect):
   check1 = 0
   check1=2
+  string = ""
 
   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as accepter_socket:
+      
+      pygame.init()
+      width = 500
+      height = 500
+      win = pygame.display.set_mode((width,height))
+      pygame.display.set_caption("Server")
+      font = pygame.font.SysFont('timesnewroman', 30)
+
       accepter_socket.bind(('', GAME_PORT))
       accepter_socket.listen(1)
 
@@ -116,6 +125,27 @@ def game_server(after_connect):
           DisplayMap(recv_player_map)
 
           #update_game_state('opp', opp_move)
+
+          run = True
+          while run:
+            for event in pygame.event.get():
+              if event.type == pygame.QUIT:
+                run = False   
+            win.fill((255,255,255))
+            height = 500
+
+            for i in recv_player_map:
+                string = ""
+                for j in i:
+                  string += str(j) + "  "
+                string = font.render(string, True, (0,0,0))
+                textRect = string.get_rect()
+                textRect.center = ((width // 2), (height // 2)-70)
+                win.blit(string, textRect)
+
+                height += 53
+
+            pygame.display.update()
 
           
           if CheckWon(score) == False:
@@ -156,12 +186,25 @@ def game_server(after_connect):
       else:
         print('Game ended')
 
+  pygame.quit()
+
 
 def game_client(opponent):
   check = 1
   check1=2
+  string = ""
 
   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as game_socket:
+      
+      pygame.init()
+      width = 500
+      height = 500
+      win = pygame.display.set_mode((width,height))
+      pygame.display.set_caption("Client")
+      font = pygame.font.SysFont('timesnewroman', 30)
+
+
+
       game_socket.connect((opponent, GAME_PORT))
       print('Game Started')
 
@@ -188,11 +231,39 @@ def game_client(opponent):
         else:
           check=0
 
+        run = True
+        while run:
+            for event in pygame.event.get():
+              if event.type == pygame.QUIT:
+                run = False   
+            win.fill((255,255,255))
+            height = 500
+
+            for i in player_map:
+                string = ""
+                for j in i:
+                  string += str(j) + "  "
+                string = font.render(string, True, (0,0,0))
+                textRect = string.get_rect()
+                textRect.center = ((width // 2), (height // 2)-70)
+                win.blit(string, textRect)
+
+                height += 53
+
+            pygame.display.update()
+        '''time.sleep(5)
+        pygame.quit()'''      
+
+
+
         
         if CheckWon(player_map) == False:
+                #timer.start_time()
+                #time_flag = 1
                 print("Enter your cell you want to open :")
                 x = input("X (1 to 5) :")
                 y = input("Y (1 to 5) :")
+                #timer.pause_time()
                 x = int(x) - 1 # 0 based indexing
                 y = int(y) - 1 # 0 based indexing
 
@@ -215,6 +286,9 @@ def game_client(opponent):
         
         send_map = pickle.dumps(player_map)
         game_socket.sendall(send_map)
+        #pygame.quit()
+
+
 
 
   if(check1==0):
@@ -225,3 +299,5 @@ def game_client(opponent):
         print("You won!")
   else:
         print('Game ended')
+
+  pygame.quit()
