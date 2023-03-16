@@ -67,7 +67,7 @@ def CheckWon(score):
     return False
 
 def CheckContinueGame(score):
-    print("Your score: ", score)
+    print("Your score: {}\n".format(score))
 
 
 
@@ -105,7 +105,7 @@ def game_server(after_connect):
       game_socket.setblocking(True)
       with game_socket:
         after_connect()
-        print('Game Started')
+        print('Game Started\n')
 
         recv_map = game_socket.recv(4096)
         minesweeper_map = pickle.loads(recv_map)
@@ -135,7 +135,7 @@ def game_server(after_connect):
 
         while True:
 
-          print("waiting for opp's move")
+          print("waiting for opp's move\n")
           opp_move = game_socket.recv(4096)
           if(not opp_move and score!=((n*n)-k)/2):
             check1 = 1
@@ -208,12 +208,12 @@ def game_server(after_connect):
                     break
                 else:
                     recv_player_map[y][x] = minesweeper_map[y][x]
-                    DisplayMap(recv_player_map)
+                    #DisplayMap(recv_player_map)
 
                     score += 1
  
           else:
-                DisplayMap(minesweeper_map)
+                #DisplayMap(minesweeper_map)
                 check1 = 0
                 CheckContinueGame(score)
                 break
@@ -260,7 +260,7 @@ def game_client(opponent):
 
 
       game_socket.connect((opponent, GAME_PORT))
-      print('Game Started')
+      print('Game Started\n')
 
       player_map = GeneratePlayerMap()
       minesweeper_map = GenerateMineSweeperMap()
@@ -294,7 +294,7 @@ def game_client(opponent):
       while True:
         
         if(check==0):
-          print("Waiting for opponent's move")
+          print("Waiting for opponent's move\n")
           recv_map = game_socket.recv(4096)
           if(not recv_map and score!=((n*n)-k)/2):
             check1 = 1
@@ -369,11 +369,11 @@ def game_client(opponent):
                     break
                 else:
                     player_map[y][x] = minesweeper_map[y][x]
-                    DisplayMap(player_map)
+                    #DisplayMap(player_map)
                     score += 1
  
         else:
-              DisplayMap(minesweeper_map)
+              #DisplayMap(minesweeper_map)
               check1 = 0
               CheckContinueGame(score)
               break
