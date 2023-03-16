@@ -166,9 +166,14 @@ def game_server(after_connect):
                           for j in i:
                               string += str(j) + "  "
                           text1 = font.render(string, True, (0,0,0))
+                          string2 = "Time Elapsed: {}".format(time_elapsed)
+                          text2 = font.render(string2, True, (0,0,0))
                           textRect = text1.get_rect()
+                          textRect1 = text2.get_rect()
                           textRect.center = ((width // 2), (height // 2)-70)
+                          textRect1.center = ((width // 2),400)
                           win.blit(text1, textRect)
+                          win.blit(text2, textRect1)
 
                           height += 53
                       
@@ -320,9 +325,14 @@ def game_client(opponent):
                         for j in i:
                             string += str(j) + "  "
                         text1 = font.render(string, True, (0,0,0))
+                        string2 = "Time Elapsed: {}".format(time_elapsed)
+                        text2 = font.render(string2, True, (0,0,0))
                         textRect = text1.get_rect()
+                        textRect1 = text2.get_rect()
                         textRect.center = ((width // 2), (height // 2)-70)
+                        textRect1.center = ((width // 2),400)
                         win.blit(text1, textRect)
+                        win.blit(text2, textRect1)
 
                         height += 53
                     
