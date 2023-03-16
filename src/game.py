@@ -218,17 +218,25 @@ def game_server(after_connect):
           
 
 
+      print("Time Elapsed: {}\n".format(time_elapsed))
       if(check1==0):
         CheckContinueGame(score)
-        print("Tie!")
+        game_socket.send((time_elapsed).encode())
+        time_elapsed_opp = (game_socket.recv(1024)).decode()
+
+        if(time_elapsed>time_elapsed_opp):
+            print("You lost!\n")
+        elif(time_elapsed_opp>time_elapsed):
+            print("You won!\n")
+        else:
+            print("Tie!\n")
       elif(check1==1):
         CheckContinueGame(score)
-        print("Your opponet tripped on a mine. You won!")  
+        print("Your opponet tripped on a mine. You won!\n")  
       else:
-        print('Game ended')
+        print('Game ended\n')
 
       pygame.quit()
-      print("Time Elapsed: {}".format(time_elapsed))
 
 
 def game_client(opponent):
@@ -367,15 +375,23 @@ def game_client(opponent):
 
 
 
+  print("Time Elapsed: {}\n".format(time_elapsed))
   if(check1==0):
         CheckContinueGame(score)
-        print("Tie!")
+        time_elapsed_opp = (game_socket.recv(1024)).decode()
+        game_socket.send((time_elapsed).encode())
+
+        if(time_elapsed>time_elapsed_opp):
+            print("You lost!\n")
+        elif(time_elapsed_opp>time_elapsed):
+            print("You won!\n")
+        else:
+            print("Tie!\n")
   elif(check1==1):
         CheckContinueGame(score)
-        print("Your opponet tripped on a mine. You won!")
+        print("Your opponet tripped on a mine. You won!\n")
   else:
-        print('Game ended')
+        print('Game ended\n')
 
   pygame.quit()
-  print("Time Elapsed: {}".format(time_elapsed))
   
