@@ -13,5 +13,5 @@ RULES:
 Improvements:
 
 ->Need to improve space clearing algo
-->Make a count up timer
+
 ->Improve GUI
