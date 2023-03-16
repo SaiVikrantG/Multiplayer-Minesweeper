@@ -130,6 +130,9 @@ def stop_identification():
     _identification_controller
   except:
     raise RuntimeError('set_username() must be called first')
-  _identification_controller.stop()
-  _identification_thread.join()
-  _identification_thread = None
+  try:
+    _identification_controller.stop()
+    _identification_thread.join()
+    _identification_thread = None
+  except:
+    print("Game ended")
