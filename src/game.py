@@ -7,8 +7,6 @@ import pygame
 import threading
 
 
-#import timer 
-
 GAME_PORT = 6005
 # participating clients must use this port for game communication
 
@@ -113,6 +111,28 @@ def game_server(after_connect):
         minesweeper_map = pickle.loads(recv_map)
         score = 0
 
+
+        #TIMER 
+        time_flag = 0
+        
+        def timer():
+            global time_elapsed
+
+            time_elapsed = 0
+            while True:
+                if(time_flag==1):
+                  time_elapsed += 1 
+                  time.sleep(1)
+
+                elif(time_flag==0):
+                  time.sleep(0.1)
+
+                elif(time_flag==2):
+                  break
+
+        t2 = threading.Thread(target = timer)
+        t2.start()
+
         while True:
 
           print("waiting for opp's move")
@@ -126,8 +146,9 @@ def game_server(after_connect):
           recv_player_map = pickle.loads(opp_move)
           DisplayMap(recv_player_map)
 
-          #update_game_state('opp', opp_move)
+          
 
+          #GUI  
           def thread():
               run = True
               while run:
@@ -166,9 +187,12 @@ def game_server(after_connect):
 
           
           if CheckWon(score) == False:
+                time_flag = 1
                 print("Enter your cell you want to open :")
                 x = input("X (1 to 8) :")
                 y = input("Y (1 to 8) :")
+                time_flag = 0
+
                 x = int(x) - 1 # 0 based indexing
                 y = int(y) - 1 # 0 based indexing
 
@@ -185,7 +209,6 @@ def game_server(after_connect):
  
           else:
                 DisplayMap(minesweeper_map)
-                #print("You have Won!")
                 check1 = 0
                 CheckContinueGame(score)
                 break
@@ -205,6 +228,7 @@ def game_server(after_connect):
         print('Game ended')
 
       pygame.quit()
+      print("Time Elapsed: {}".format(time_elapsed))
 
 
 def game_client(opponent):
@@ -230,6 +254,28 @@ def game_client(opponent):
       send_map = pickle.dumps(minesweeper_map)
       score = 0
       game_socket.sendall(send_map)
+
+
+      #TIMER
+      time_flag = 0
+
+      def timer():
+          global time_elapsed
+
+          time_elapsed = 0
+          while True:
+              if(time_flag==1):
+                time_elapsed += 1 
+                time.sleep(1)
+
+              elif(time_flag==0):
+                time.sleep(0.1)
+
+              elif(time_flag==2):
+                  break
+
+      t2 = threading.Thread(target = timer)
+      t2.start()
         
 
       while True:
@@ -248,7 +294,7 @@ def game_client(opponent):
         else:
           check=0  
 
-        
+        #GUI
         def thread():
             run = True
             while run:
@@ -285,13 +331,16 @@ def game_client(opponent):
         t1 = threading.Thread(target = thread)  
         t1.run()
         
+        
+        
+        
         if CheckWon(player_map) == False:
-                #timer.start_time()
-                #time_flag = 1
+                time_flag = 1
                 print("Enter your cell you want to open :")
                 x = input("X (1 to 8) :")
                 y = input("Y (1 to 8) :")
-                #timer.pause_time()
+                time_flag = 0
+                
                 x = int(x) - 1 # 0 based indexing
                 y = int(y) - 1 # 0 based indexing
 
@@ -307,7 +356,6 @@ def game_client(opponent):
  
         else:
               DisplayMap(minesweeper_map)
-              #print("You have Won!")
               check1 = 0
               CheckContinueGame(score)
               break
@@ -329,4 +377,5 @@ def game_client(opponent):
         print('Game ended')
 
   pygame.quit()
+  print("Time Elapsed: {}".format(time_elapsed))
   
