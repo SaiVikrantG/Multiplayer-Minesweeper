@@ -144,7 +144,7 @@ def game_server(after_connect):
              check1=0
              break
           recv_player_map = pickle.loads(opp_move)
-          DisplayMap(recv_player_map)
+          #DisplayMap(recv_player_map)
 
           
 
@@ -303,7 +303,7 @@ def game_client(opponent):
              check1=0
              break 
           player_map = pickle.loads(recv_map)
-          DisplayMap(player_map)
+          #DisplayMap(player_map)
         else:
           check=0  
 
