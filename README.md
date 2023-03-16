@@ -6,6 +6,14 @@ RULES:
 
 -> Two players play on a single map.
 
+->MAP SIZE: 8*8
+
+->BOMBS HIDDEN: 10
+
+->Players play by turn.
+
+->RUN "run.py" file to start game.
+
 -> If any player encounters a mine, they automatically lose the game.
 
 -> In the end after both the players have uncovered all the spaces without any mines, the game ends in a tie.
