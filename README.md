@@ -26,8 +26,12 @@ A 2 player minesweeper game over a local area network using sockets. The game co
 
 - Improve GUI
 
-## Deependencies:
+## Dependencies:
 
 - Pygame
+  
+- Python 3.x
+
+- Pickle
 
 - Sockets
